@@ -38,16 +38,6 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
 
-    # - name: Run Tests
-    #   env:
-    #     DB_CONNECTION: mysql
-    #     DB_HOST: ${{ secrets.DB_HOST }}
-    #     DB_PORT: ${{ secrets.DB_PORT }}
-    #     DB_DATABASE: ${{ secrets.DB_DATABASE }}
-    #     DB_USERNAME: ${{ secrets.DB_USERNAME }}
-    #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #   run: php artisan test
-
   deploy:
     name: Deploy to EC2
     needs: laravel-tests
@@ -69,6 +59,9 @@ jobs:
 
     - name: Build Assets
       run: npm ci && npm run production
+
+    - name: Add EC2 Host to known_hosts
+      run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
     - name: Sync Files to EC2
       env:
@@ -93,7 +86,7 @@ jobs:
         DB_USERNAME: ${{ secrets.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        ssh -i "laravel.pem" ubuntu@ec2-35-154-241-153.ap-south-1.compute.amazonaws.com
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USER@$HOST << EOF
           cd /var/www/laravel
           composer install --no-dev --no-progress --prefer-dist
           php artisan migrate --force
