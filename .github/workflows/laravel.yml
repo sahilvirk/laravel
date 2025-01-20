@@ -73,7 +73,7 @@ jobs:
     - name: Sync Files to EC2
       env:
         SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-        HOST: ${{ secrets.EC2_HOST }}
+        HOST: "35.154.241.153"
         USER: ${{ secrets.EC2_USER }}
       run: |
         mkdir -p ~/.ssh
@@ -85,7 +85,7 @@ jobs:
     - name: Run Laravel Commands on EC2
       env:
         SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-        HOST: ${{ secrets.EC2_HOST }}
+        HOST: "35.154.241.153"
         USER: ${{ secrets.EC2_USER }}
         DB_HOST: ${{ secrets.DB_HOST }}
         DB_PORT: ${{ secrets.DB_PORT }}
