@@ -75,37 +75,29 @@ jobs:
         SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         HOST: ${{ secrets.EC2_HOST }}
         USER: ${{ secrets.EC2_USER }}
-        TARGET: "/var/www/laravel"
-      # run: |
-      #   mkdir -p ~/.ssh
-      #   echo "$SSH_KEY" > ~/.ssh/id_rsa
-      #   chmod 600 ~/.ssh/id_rsa
-      #   rsync -az --delete --exclude="node_modules" --exclude=".git" \
-      #   ./ $USER@$HOST:/var/www/laravel
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        rsync -az --delete --exclude="node_modules" --exclude=".git" \
+        ./ $USER@$HOST:/var/www/laravel
 
     - name: Run Laravel Commands on EC2
       env:
         SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         HOST: ${{ secrets.EC2_HOST }}
         USER: ${{ secrets.EC2_USER }}
-        # DB_HOST: ${{ secrets.DB_HOST }}
-        # DB_PORT: ${{ secrets.DB_PORT }}
-        # DB_DATABASE: ${{ secrets.DB_DATABASE }}
-        # DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        # DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      # run: |
-      #   ssh -i "laravel.pem" ubuntu@ec2-35-154-241-153.ap-south-1.compute.amazonaws.com
-      #     cd /var/www/laravel
-      #     composer install --no-dev --no-progress --prefer-dist
-      #     php artisan migrate --force
-      #     php artisan config:cache
-      #     php artisan route:cache
-      #     php artisan view:cache
-      #   EOF
-      script:
-        cd /var/www/laravel
-        php artisan migrate --force php artisan config:cache
-        php artisan route:cache
-        php artisan view:cache
-
-
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_DATABASE: ${{ secrets.DB_DATABASE }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        ssh -i "laravel.pem" ubuntu@ec2-35-154-241-153.ap-south-1.compute.amazonaws.com
+          cd /var/www/laravel
+          composer install --no-dev --no-progress --prefer-dist
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+        EOF
