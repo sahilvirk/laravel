@@ -76,8 +76,6 @@ jobs:
         HOST: "35.154.241.153"
         USER: ${{ secrets.EC2_USER }}
       run: |
-        echo "Printing SSH Key: $SSH_KEY"
-        echo "Printing Host: $HOST"
         mkdir -p ~/.ssh
         echo "$SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
